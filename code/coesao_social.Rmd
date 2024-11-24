@@ -1,4 +1,4 @@
-title: "Survey Coesão social e desigualdades: distribuições"
+title: "Análise do survey coesão social e desigualdades"
 author: "Felix Lopez"
 date: "Última edição em `r format(Sys.time(), '%d %B %Y')`"
 =======
@@ -38,8 +38,9 @@ coesao_experimental[coesao_experimental == 999] <- NA # Replace 999 with NA
 
 ## INTRODUÇÃO
 
+O propósito deste documento é descrever e analisar resultados do survey "coesão social e desigualdades". 
 
-Esse documento apresenta a distribuição das respostas do questionário sobre coesão social. 
+[descrever ]
 
 Ainda não inclui a sobrerepresentação dos mais ricos.
 
@@ -842,8 +843,6 @@ coesao_experimental %>%
            geom.colors = "gray",
            wrap.title = 120)
 ```
-
-parei aqui
 
 
 Questao sobre bem-estar meu e dos outros, por região
