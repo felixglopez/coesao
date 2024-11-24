@@ -490,7 +490,7 @@ plot_likert(imparcialidade_institucional,
 
 ```{r confinca institucional barras, fig.width=12}
 coesao_experimental %>%
-  group_by(cor) %>%
+  group_by(renda) %>%
   select(43:46) %>% 
   plot_stackfrq(title = "Confiança institucional",
                 legend.title = NULL,
@@ -758,7 +758,6 @@ plot_likert(imparcialidade_institucional,
 ```
 
 
-
 ```{r associativismo, fig.width=12}
 #grupo para verificar pertencimento a associações
 associativismo <- coesao_experimental %>% 
@@ -826,16 +825,26 @@ sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao
 ```
 
 ** Bem-estar, por nível de escolaridade **
+
+
+
 ```{r, fig.width=12}
-sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$esc, 
-               fun = "xtab",
-               type  = "bar",
-               geom.colors = "Set1"
-               )
-=======
+coesao_experimental %>% 
+        group_by(esc) %>% 
+        plot_frq(coesao_experimental,
+           var.cnt = bem_estar,
+           var.grp = esc,
+           show.n = TRUE,
+           show.values = TRUE,
+           show.ci = TRUE,
+           show.na = TRUE,
+           coord.flip = FALSE,
            geom.colors = "gray",
-           wrap.title = 140)
+           wrap.title = 120)
 ```
+
+parei aqui
+
 
 Questao sobre bem-estar meu e dos outros, por região
 
