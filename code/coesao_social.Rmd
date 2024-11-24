@@ -1,0 +1,2138 @@
+title: "Survey Coesão social e desigualdades: distribuições"
+author: "Felix Lopez"
+date: "Última edição em `r format(Sys.time(), '%d %B %Y')`"
+=======
+---
+title: "Coesão social e desigualdades"
+author: "Felix Lopez"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = F, message = F, fig.align = 'center')
+```
+
+```{r}
+library(ggrepel)
+library(tidyverse)
+library(haven)
+library(sjPlot)
+library(likert)
+library(sjlabelled)
+library(datawizard)
+library(sjstats)
+library(psych)
+library(tinytex)
+library(Hmisc)
+```
+
+```{r, include=FALSE}
+setwd("/Users/fglopez/Documents/GitHub/coesao/data")
+coesao <- read_sav("COESAO_SOCIAL_DEZ22.sav") # Load the data
+coesao_experimental <- coesao # Create a copy of the dataset
+coesao_experimental[coesao_experimental == 888] <- NA # Replace 888 with NA
+coesao_experimental[coesao_experimental == 999] <- NA # Replace 999 with NA
+```
+
+## INTRODUÇÃO
+
+
+Esse documento apresenta a distribuição das respostas do questionário sobre coesão social. 
+
+Ainda não inclui a sobrerepresentação dos mais ricos.
+
+A amostra tem 2019 casos e 130 colunas
+
+```{r tamanho amostra}
+coesao_experimental
+```
+
+### QUARTIS DA DURAÇÃO DAS ENTREVISTAS EM MINUTOS
+
+```{r duracao entrevistas}
+summary(coesao_experimental$Duration_numeric)
+```
+
+Dados sociodemográficos
+
+```{r religiao}
+plot_frq(coesao_experimental$relig,
+         wrap.title = 60,
+         wrap.labels = 60,
+         #show.ci = T,
+         geom.colors = "grey",
+         coord.flip = T) +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size = 9), axis.title = element_text(size = 9)) +
+  ggtitle("Religião dos entrevistados")
+```
+
+## ANALISANDO CONSISTÊNCIA INTERNA DAS RESPOSTAS
+
+### Consistencia interna das variáveis de confiança interpessoal
+
+```{r}
+alpha(coesao_experimental[,c("I_1_conf", "I_2_conf", "I_3_conf", "I_4_conf", "I_5_conf", "I_6_conf")])
+```
+
+### Consistencia interna das variáveis de corrupção e justiça procedimental
+### baixa consistencia
+
+QUARTIS DA DURAÇÃO DAS ENTREVISTAS EM MINUTOS
+
+```{r duracao entrevistas}
+summary(coesao_experimental$Duration_numeric)
+```
+
+
+```{r, include = F}
+alpha(coesao_experimental[,c("I_1_conf", "I_2_conf", "I_3_conf", "I_4_conf", "I_5_conf", "I_6_conf")])
+```
+
+
+```{r, include = T}
+alpha(coesao_experimental[,c("I_1_corrup", "I_2_corrup", "I_3_corrup", "I_4_corrup")])
+```
+
+
+
+```{r, include = T}
+alpha(coesao_experimental[,c("I_2_corrup", "I_2_injus")])
+alpha(coesao_experimental[,c("T_lula_bolso_2", "beneficios"), ckeck.keys = TRUE])  
+```
+
+
+PLOTANDO VARIÁVEIS SOCIODEMOGRÁFICAS
+```{r ocupacao, out.width = '85%', fig.align = 'center',fig.cap = 'Distribuição dos percentuais, por ocupação do entrevistado'}
+#fig.dim = c(5,3)
+```
+
+
+
+
+```{r ocupacao, fig.width=12}
+plot_frq(coesao_experimental$sit,
+         wrap.title = 60,
+         wrap.labels = 60,
+         #show.ci = T,
+         geom.colors = "grey",
+         coord.flip = T) +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size = 9), axis.title = element_text(size = 9)) +
+  ggtitle("Ocupação")
+```
+
+### POPULAÇÃO ECONOMICAMENTE ATIVA
+```{r pea, fig.width=12}
+plot_frq(coesao_experimental$pea,
+         wrap.title = 120,
+         wrap.labels = 120,
+         #show.ci = T,
+         vjust = "top",
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =12)) + 
+  ggtitle("População Economicamente Ativa")
+```
+
+```{r renda, fig.width=12}
+plot_frq(coesao_experimental$renda,
+         wrap.title = 120,
+         wrap.labels = 120,
+         #show.ci = T,
+         geom.colors = "grey",
+         vjust = "top")+
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =12)) + 
+  ggtitle("Renda")
+```
+
+  
+```{r renda familiar, fig.width=12}  
+plot_frq(coesao_experimental$rendaf,
+           wrap.title = 60,
+           wrap.labels = 80,
+           #show.ci = T,
+           geom.colors = "grey",
+           vjust = "top",
+           coord.flip = T) +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9)) + ggtitle("Renda familiar")
+```
+
+```{r cor, echo=F, fig.width=12}
+plot_frq(coesao_experimental$cor,
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey",
+         coord.flip = F) +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9)) +  
+  ggtitle("Cor")
+```
+
+Distribuição da amostra por religião
+
+```{r religiao, fig.width=12}
+plot_frq(coesao_experimental$relig,
+         wrap.title = 50,
+         wrap.labels = 60,
+         #show.ci = T,
+         geom.colors = "grey",
+         vjust = "top",
+         coord.flip = T) +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9)) +  
+  ggtitle("Religião")
+```
+
+
+### Análise dos Blocos de Questões
+
+CONFIANCA INTERPESSOAL, INSTITUCIONAL, IMPARCIALIDADE E CORRUPÇÃO
+
+```{r, fig.width=12}
+#CRIANDO O BLOCO CONFIANÇA
+confianca_interpessoal  <- coesao_experimental %>% 
+  select(23:28)
+```
+
+
+Confiança nos brasileiros
+
+```{r brasileiros, fig.width=12}
+plot_frq(confianca_interpessoal, I_1_conf, show.ci = T)
+```
+
+
+```{r, fig.width=12}
+plot_frq(confianca_interpessoal, I_2_conf, show.ci = T,
+         wrap.title = 70)
+```
+
+```{r, fig.width=12}
+plot_frq(confianca_interpessoal, I_3_conf, show.ci = T)
+```
+
+```{r, fig.width=12}
+plot_frq(confianca_interpessoal, I_4_conf, show.ci = T, wrap.title = 140)
+```
+
+```{r, fig.width=12}
+plot_frq(confianca_interpessoal, I_5_conf, show.ci = T, wrap.title = 140)
+```
+
+```{r, fig.width=12}
+plot_frq(confianca_interpessoal, I_6_conf, show.ci = T, wrap.title = 80)
+         wrap.title = 120
+         geom.colors = "grey"
+```
+
+Confiança interpessoal, por região
+
+
+```{r brasileiros por regiao, fig.width=12}
+#confiança nos brasileiros por região
+plot_grpfrq(coesao_experimental$I_1_conf, coesao_experimental$regiao,
+            type = c("bar"),
+            bar.pos = c("dodge"),
+            weight.by = NULL,
+            intr.var = NULL,
+            title = "Confiança nos brasileiros",
+            title.wtd.suffix = NULL,
+            legend.title = NULL,
+            axis.titles = NULL,
+            geom.colors = "Paired",
+            facet.grid = T,
+            show.grpcnt = T,
+            wrap.title =70,
+            wrap.labels= 10,
+            #show.axis.values = F
+            coord.flip = F) +theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9), axis.title = element_text(size = 9))
+```
+
+
+
+```{r familia por regiao, fig.width=12}
+#confiança na familia, por região
+plot_grpfrq(coesao_experimental$I_2_conf, coesao_experimental$regiao,
+            type = c("bar"),
+            bar.pos = c("dodge"),
+            weight.by = NULL,
+            intr.var = NULL,
+            title = "Confiança na família",
+            geom.colors = "Paired",
+            facet.grid = T,
+            show.grpcnt = T,
+            wrap.labels = 10,
+            wrap.title = 80,
+            show.axis.values = F,
+            show.na = F,
+            coord.flip = F)+
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9), axis.title = element_text(size = 9))
+```
+
+Confiança nos vizinhos, por região
+```{r vizinhos por regiao, fig.width=12}
+plot_grpfrq(coesao_experimental$I_3_conf, coesao_experimental$regiao,
+            type = c("bar"),
+            bar.pos = c("dodge"),
+            weight.by = NULL,
+            intr.var = NULL,
+            title = "Confiança nos vizinhos, por região",
+            title.wtd.suffix = NULL,
+            legend.title = NULL,
+            axis.titles = NULL,
+            geom.colors = "Paired",
+            facet.grid = T,
+            show.grpcnt = T,
+            show.axis.values = F,
+            show.na = T,
+            vjust = "outward",
+            coord.flip = F) +
+       theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9), axis.title = element_text(size = 9))
+```
+
+Confiança nos amigos, por região
+
+```{r amigos por regiao, fig.width=12}
+plot_grpfrq(coesao_experimental$I_4_conf, coesao_experimental$regiao,
+            type = c("bar"),
+            bar.pos = c("dodge"),
+            weight.by = NULL,
+            intr.var = NULL,
+            title = "Confiança nos amigos, por região",
+            title.wtd.suffix = NULL,
+            legend.title = NULL,
+            axis.titles = NULL,
+            geom.colors = "Paired",
+            facet.grid = T,
+            show.grpcnt = T,
+            show.axis.values = F,
+            show.na = T,
+            vjust = "outward",
+            coord.flip = F) +
+           theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9), axis.title = element_text(size = 9))
+```
+
+Confiança nos membros da igreja, por região
+
+```{r membros da igreja por regiao, fig.width=12}
+plot_grpfrq(coesao_experimental$I_5_conf, coesao_experimental$regiao,
+            type = c("bar"),
+            bar.pos = c("dodge"),
+            weight.by = NULL,
+            intr.var = NULL,
+            title = "Confiança nos membros da igreja, por região",
+            title.wtd.suffix = NULL,
+            legend.title = NULL,
+            axis.titles = NULL,
+            geom.colors = "Paired",
+            facet.grid = T,
+            show.grpcnt = T,
+            show.axis.values = F,
+            show.na = T,
+            vjust = "outward",
+            coord.flip = F)+ 
+        theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9), axis.title = element_text(size = 9))
+```
+Confiança nas pessoas que encontra pela primeira vez, por região
+
+```{r conheceu primeira vez por regiao, fig.width=12}
+plot_grpfrq(coesao_experimental$I_6_conf, coesao_experimental$regiao,
+            type = c("bar"),
+            bar.pos = c("dodge"),
+            weight.by = NULL,
+            intr.var = NULL,
+            title = "Confiança nas pessoas que encontra a primeira vez",
+            title.wtd.suffix = NULL,
+            legend.title = NULL,
+            axis.titles = NULL,
+            geom.colors = "Paired",
+            facet.grid = T,
+            show.grpcnt = T,
+            show.axis.values = F,
+            show.na = T,
+            vjust = "outward",
+            coord.flip = F) +
+        theme(plot.title = element_text(hjust = 0.5),text = element_text(size =9), axis.title = element_text(size = 9))
+```
+
+
+
+Alternativa de visualização - confiança interpessoal
+
+
+```{r, fig.width=12}
+plot_stackfrq(confianca_interpessoal,# coesao_experimental$regiao,
+  title = "Confiança interpessoal",
+  legend.title = NULL,
+  legend.labels = NULL,
+  axis.titles = NULL,
+  axis.labels = NULL,
+  weight.by = NULL,
+  sort.frq = NULL,
+  wrap.title = 50,
+  wrap.labels = 60,
+  wrap.legend.title = 60,
+  wrap.legend.labels = 60,
+  geom.size = 0.5,
+  geom.colors = "Paired",
+  show.prc = TRUE,
+  show.n = F,
+  show.total = TRUE,
+  show.axis.prc = TRUE,
+  show.legend = TRUE,
+  #grid.breaks = 0.2,
+  expand.grid = FALSE,
+  digits = 0,
+  vjust = "center",
+  coord.flip = T)+
+  theme(legend.position = "bottom")
+```
+
+
+
+###ESCALA LIKERT DA SEIS QUESTÕES SOBRE CONFIANÇCA INTERPESSOAL
+
+
+```{r confianca interpessoal - likert, fig.width=12}
+plot_likert(confianca_interpessoal,
+            title = "Confiança interpessoal",
+            legend.title = "Grau de confiança",
+            axis.labels = c("Brasileiros", "Família (pais e irmãos)", "Amigos", "Vizinhos", "Membros de sua igreja", 
+                            "Pessoas que encontra pela primeira vez"),
+            catcount = 4,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 0.9,
+            sort.frq = "pos.desc") +
+            theme(plot.title = element_text(hjust = 0.5),
+                  text = element_text(size =11), legend.position = "bottom")
+```
+
+
+### Confiança Institucional ###
+
+```{r confiança institucional, fig.width=12}
+confianca_institucional  <- coesao_experimental %>% 
+  select(29:38)
+```
+```{r, likert_institucional}
+likert_plot <- plot_likert(confianca_institucional,
+            title = "Confiança em instituições",
+            legend.title = "Grau de confiança",
+            axis.labels = c("Igreja", "Polícia", "Militares", "Congresso Nacional", "Funcionários Públicos",
+                            "SUS", "Cientistas", "Judiciário", "Governo Federal", "Partidos Políticos"),
+            catcount = 4,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 0.9,
+            sort.frq = "pos.desc",
+            values = "sum.outside") +
+  theme(plot.title = element_text(hjust = 0.5),
+                  text = element_text(size =11), legend.position = "bottom")
+```
+
+
+```{r}
+# Save the plot as a PNG file
+ggsave("/Users/fglopez/Documents/GitHub/coesao/plots/confianca_institucional.png", plot = likert_plot, width = 12, height = 8, dpi = 300)
+```
+
+
+### ESCALA LIKERT DA QUATRO QUESTÕES SOBRE CORRUPÇÃO ###
+
+
+```{r corrupcao, fig.width=12}
+corrupcao_institucional <- coesao_experimental %>% 
+  select(39:42)
+
+plot_likert(corrupcao_institucional,
+            title = "Grau de corrupção em instituições",
+            legend.title = "Nível de corrupção",
+            axis.labels = c("Policiais", "Juízes", "Políticos", "Burocratas"),
+            catcount = 4,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 0.9,
+            sort.frq = "pos.desc",
+            values = "sum.outside") 
+```
+
+
+
+### ESCALA LIKERT DA QUATRO QUESTÕES SOBRE IMPARCIALIDADE INSTITUCIONAL ###
+
+
+
+```{r imparcialidade, fig.width=12}
+imparcialidade_institucional <- coesao_experimental %>% 
+  select(cor, 43:46) 
+
+plot_likert(imparcialidade_institucional,
+            title = "Decisões injustas nas instituições",
+            legend.title = "Frequência da injustiça",
+            axis.labels = c("Policiais", "Juízes", "Políticos", "Burocratas"),
+            catcount = 4,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 0.9,
+            sort.frq = "pos.desc",
+            #values = "sum.outside"
+)
+```
+
+
+```{r confinca institucional barras, fig.width=12}
+coesao_experimental %>%
+  group_by(cor) %>%
+  select(43:46) %>% 
+  plot_stackfrq(title = "Confiança institucional",
+                legend.title = NULL,
+                legend.labels = NULL,
+                axis.titles = NULL,
+                axis.labels = NULL,
+                weight.by = NULL,
+                sort.frq = NULL,
+                wrap.title = 50,
+                wrap.labels = 70,
+                wrap.legend.title = 30,
+                wrap.legend.labels = 28,
+                geom.size = 0.5,
+                geom.colors = "Paired",
+                show.prc = TRUE,
+                show.n = F,
+                show.total = TRUE,
+                show.axis.prc = TRUE,
+                show.legend = TRUE,
+                grid.breaks = 0.2,
+                expand.grid = FALSE,
+                digits = 1,
+                vjust = "center",
+                coord.flip = T)
+```
+
+
+
+Confiança institucional - barras empilhadas
+
+
+```{r confinca institucional barras, fig.width=12}
+coesao_experimental %>%
+  group_by(regiao) %>%
+  select(27:34) %>% 
+  plot_stackfrq(title = "Confiança institucional",
+                legend.title = NULL,
+                legend.labels = NULL,
+                axis.titles = NULL,
+                axis.labels = NULL,
+                weight.by = NULL,
+                sort.frq = NULL,
+                wrap.title = 50,
+                wrap.labels = 70,
+                wrap.legend.title = 30,
+                wrap.legend.labels = 28,
+                geom.size = 0.5,
+                geom.colors = "Paired",
+                show.prc = TRUE,
+                show.n = F,
+                show.total = TRUE,
+                show.axis.prc = TRUE,
+                show.legend = TRUE,
+                grid.breaks = 0.2,
+                expand.grid = FALSE,
+                digits = 1,
+                vjust = "center",
+                coord.flip = T)
+```
+
+** Confiança institucional, por sexo **
+```{r confiança institucional por sexo, fig.width=12}
+coesao_experimental %>%
+  #group_by(sexo) %>%
+  select(27:36) %>% 
+  plot_stackfrq(
+  coord.flip = T) +
+  theme(plot.title = element_text(hjust = 0.5),
+                  text = element_text(size =10), legend.position = "bottom")
+```
+
+```{r confianca interpessoal por sexo barra empilhada, include = FALSE, fig.width=12}
+
+### Plotando gráficos agrupados por regiões, sexo, religião etc. ###
+
+#confiança interpessoal, sexo
+plot_xtab(coesao_experimental$sexo, coesao_experimental$I_1_conf, margin = "row", bar.pos = "stack",
+          show.summary = TRUE, coord.flip = F)
+```
+
+
+```{r, include=TRUE, fig.width=12}
+##Confiança interpessoal, região **
+plot_xtab(coesao_experimental$cor, coesao_experimental$I_1_corrup, 
+          margin = "row", 
+          bar.pos = "stack",
+          show.summary = TRUE, coord.flip = T)
+```
+
+
+```{r, include = T, fig.width=12}
+plot_xtab(coesao_experimental$zona, coesao_experimental$I_1_conf, 
+          margin = "row", 
+          bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120) +
+  theme(legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+##Confiança interpessoal, região **
+plot_xtab(coesao_experimental$sexo, coesao_experimental$I_2_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+
+```{r, include = FALSE, fig.width=12}
+plot_xtab(coesao_experimental$idadef , coesao_experimental$I_1_conf, margin = "row", bar.pos = "stack",
+          show.summary = TRUE, coord.flip = F)
+```
+
+```{r, include = TRUE}
+plot_xtab(coesao_experimental$esc , coesao_experimental$I_1_conf, margin = "row", bar.pos = "stack",
+          show.summary = TRUE, coord.flip = T)
+```
+
+```{r, include= T, fig.width=12}
+plot_xtab(coesao_experimental$relig, coesao_experimental$I_1_conf, margin = "row", bar.pos = "stack",
+          show.summary = TRUE, coord.flip = T)
+```
+
+```{r, include = T, fig.width=12}
+plot_xtab(coesao_experimental$renda , coesao_experimental$I_1_conf, margin = "row", bar.pos = "stack",
+          show.summary = TRUE, coord.flip = T)
+```
+
+```{r, include = T, fig.width=12}
+plot_xtab(coesao_experimental$cor , coesao_experimental$I_1_conf, margin = "row", bar.pos = "stack",
+          show.summary = TRUE, coord.flip = T)
+```
+
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$sexo, coesao_experimental$I_3_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$sexo, coesao_experimental$I_4_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$sexo, coesao_experimental$I_5_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$sexo, coesao_experimental$I_6_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r,  fig.width=12}
+plot_xtab(coesao_experimental$renda , coesao_experimental$I_1_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r,  fig.width=12}
+plot_xtab(coesao_experimental$renda , coesao_experimental$I_2_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+
+### BLOCO PROXIMIDADE SOCIAL ###
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$renda , coesao_experimental$I_3_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$renda , coesao_experimental$I_4_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$renda , coesao_experimental$I_5_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$renda , coesao_experimental$I_6_conf, margin = "row", bar.pos = "stack",
+          show.summary = T, coord.flip = T, wrap.title = 120)+
+  theme(legend.position = "bottom")
+```
+
+BLOCO PROXIMIDADE SOCIAL
+
+
+```{r, include = FALSE, fig.width=12}
+#criando o grupo de variáveis
+proximidade_casar <- coesao_experimental %>% 
+  select(47, 49, 51, 53, 55)
+```
+
+
+** Proximidade social: filhos**
+
+```{r proximidade casar, fig.width=12}
+plot_likert(proximidade_casar,
+            title = "Proximidade social - filhos",
+            legend.title = "Incômodo em relação ao filho se casar com",
+            axis.labels = c("Homossexual", "Favelado", "Candomblé/Umbanda", "Evangélico", "Pobre"),
+            catcount = 4,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            #grid.range = 0.9,
+            sort.frq = "pos.desc"
+            #values = "sum.outside"
+)  +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11), legend.position = "bottom")
+```
+
+
+** Proximidade social amigos **
+
+```{r, fig.width=12}
+#criando o df da proximidade como amigo em relaçao a alguns tipos sociais            
+proximidade_amigo <- coesao_experimental %>% 
+  select(48, 50, 52, 54, 56)
+
+plot_likert(proximidade_amigo,
+            title = "Proximidade social - amigos",
+            legend.title = "Incômodo em relação a ter amigos neste perfil",
+            axis.labels = c("Homossexual", "Favelado", "Candomblé/Umbanda", "Evangélico", "Pobre"),
+            catcount = 4,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 1,
+            sort.frq = "pos.desc",
+            #values = "sum.outside"
+            ) +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11), legend.position = "bottom")
+```
+
+
+```{r,  fig.width=12}
+plot_likert(imparcialidade_institucional,
+            title = "Decisões injustas nas instituições",
+            legend.title = "Frequência da injustiça",
+            axis.labels = c("Policiais", "Juízes", "Políticos", "Burocratas"),
+            catcount = 4,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 1,
+            sort.frq = "pos.desc",
+            #values = "sum.outside"
+)+
+            theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11), legend.position = "bottom")
+```
+
+
+
+```{r associativismo, fig.width=12}
+#grupo para verificar pertencimento a associações
+associativismo <- coesao_experimental %>% 
+  select(I_1_org:I_5_org)
+
+plot_likert(associativismo,
+            title = "Frequência do associativismo",
+            legend.title = "Tipo de associação",
+            axis.labels = c("ONGs", "Associação moradores/bairro", "Assoc. Profissionais/Sindicatos", "org. religiosas", "clubes recreativos/esportivos"),
+            catcount = 3,
+            wrap.labels = 70,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 1,
+            sort.frq = "pos.desc",
+            #values = "sum.outside"
+) +
+            theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11), legend.position = "bottom")
+```
+
+** Distribuição da questao sobre bem-estar meu e dos outros, Brasil **
+            
+Trata-se de discutir o conceito de consciência social
+
+
+Questao sobre bem-estar meu e dos outros, Brasil
+
+
+```{r, fig.width=12}
+coesao_experimental %>% 
+  #group_by(regiao) %>% 
+  plot_frq(bem_estar, 
+           show.n = T, 
+           show.values = TRUE, 
+           sort.frq = "none", 
+           show.ci = TRUE,
+           show.na = TRUE,
+           coord.flip = F,
+           vjust = "outward",
+           geom.colors = "black")
+```
+** Distribuição da questao sobre bem-estar meu e dos outros, por região **
+```{r, fig.width=12}
+coesao_experimental %>% 
+  group_by(regiao) %>% 
+  plot_frq(bem_estar, 
+           show.n = T, 
+           show.values = TRUE, 
+           sort.frq = "none", 
+           show.ci = TRUE,
+           show.na = TRUE,
+           coord.flip = F,
+           vjust = "outward",
+           geom.colors = "black")
+```
+
+
+bem-estar + renda familiar
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$renda, 
+               fun = "xtab",
+               type  = "bar",
+               geom.colors = "Set1")
+```
+
+** Bem-estar, por nível de escolaridade **
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$esc, 
+               fun = "xtab",
+               type  = "bar",
+               geom.colors = "Set1"
+               )
+=======
+           geom.colors = "gray",
+           wrap.title = 140)
+```
+
+Questao sobre bem-estar meu e dos outros, por região
+
+```{r, fig.width=12}
+coesao_experimental %>% 
+  group_by(regiao) %>% 
+  plot_frq(bem_estar, 
+           show.n = T, 
+           show.values = TRUE, 
+           sort.frq = "none", 
+           show.ci = TRUE,
+           show.na = TRUE,
+           coord.flip = F,
+           geom.colors = "gray",
+           wrap.title = 120)
+```
+
+Questao sobre bem-estar meu e dos outros, por sexo
+
+```{r, fig.width=12}
+coesao_experimental %>% 
+  group_by(sexo) %>% 
+  plot_frq(bem_estar, 
+           show.n = T, 
+           show.values = TRUE, 
+           sort.frq = "none", 
+           show.ci = TRUE,
+           show.na = TRUE,
+           coord.flip = F,
+           geom.colors = "gray",
+           wrap.title = 120)
+```
+
+bem-estar + renda familiar
+
+```{r, fig.width=12}
+sjPlot::sjplot(coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$renda, 
+               fun = "xtab",
+               type  = "bar",
+               geom.colors = "Set2", 
+               wrap.title = 120,
+               wrap.label = 40)
+```
+
+Bem-estar, por nível de escolaridade
+
+```{r, fig.width=12, warning=F}
+sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$esc, 
+               geom.colors = "Set2",
+               wrap.title = 120,
+       show.n = F,
+               wrap.label = 40)
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```
+
+Bem-estar e religiao
+
+```{r bem-estar e religiao, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$relig, 
+<<<<<<< HEAD
+               fun = "xtab",
+               type  = "bar",
+               geom.colors = "Set1",
+               expand.grid = TRUE,
+)
+```
+
+Bem-estar e renda
+=======
+               geom.colors = "Set2",
+               wrap.title = 120,
+               wrap.label = 40,
+               show.n = F)
+```
+
+Bem-estar e renda
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r bem-estar e renda, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$renda, 
+               fun = "xtab",
+               title = "Consciência social, por renda",
+               type  = "bar",
+<<<<<<< HEAD
+               geom.colors = "Set1", 
+               wrap.title = 140,
+               wrap.label = 60) +
+  theme(legend.position = "bottom")
+```
+
+=======
+               geom.colors = "Set2", 
+               wrap.title = 140,
+               wrap.label = 40)
+```
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+
+Responsabilidade por moradores de rua
+
+```{r morador de rua, fig.width=12 }
+plot_frq(coesao_experimental$sit_rua1, 
+         show.n = T, 
+         show.values = TRUE, 
+         sort.frq = "none", 
+         show.ci = TRUE,
+         show.na = TRUE,
+         coord.flip = F,
+         wrap.title = 140,
+         #vjust = "outward",
+         geom.colors = "GRAY")
+```
+
+Morador de rua prejudica a si mesmo ou também aos outros?
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r morador de rua 2, fig.width=12}
+plot_frq(coesao_experimental$sit_rua3, 
+         show.n = T, 
+         show.values = TRUE, 
+         sort.frq = "none", 
+         show.ci = TRUE,
+         show.na = TRUE,
+         coord.flip = F,
+         wrap.title = 140,
+<<<<<<< HEAD
+         #vjust = "outward",
+         geom.colors = "grey")
+```
+
+
+```{r morador de rua 2 por renda, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$sit_rua1, coesao_experimental$renda,
+               wrap.title = 140)+
+  theme(legend.position = "bottom")
+```
+
+  
+=======
+         geom.colors = "grey") +
+  theme(legend.position = "bottom")
+
+```
+
+```{r morador de rua 2 por renda, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$sit_rua1, coesao_experimental$renda,
+               wrap.title = 140, show.n = F)
+```
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+
+Cruzando a questão da situação de rua com a renda
+
+<<<<<<< HEAD
+Cruzando a questão da situação de rua com a renda
+=======
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$sit_rua3, coesao_experimental$renda)
+```
+
+```{r, fig.width=12}
+coesao_experimental %>% 
+  group_by(regiao) %>% 
+  plot_frq(bem_estar, 
+           show.n = T, 
+           show.values = TRUE, 
+           sort.frq = "none", 
+           coord.flip = F,
+<<<<<<< HEAD
+           #vjust = "outward",
+           geom.colors = "gray")
+```
+
+
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$renda,
+               fun = "xtab",
+               type  = "bar",
+               geom.colors = "Set2")
+```
+
+Questão sobre a Situação de rua, por escolaridade
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$sit_rua3, coesao_experimental$esc, 
+               fun = "xtab",
+               type  = "bar",
+               coord.flip = T,
+               geom.colors = "Set2")
+```
+
+=======
+           geom.colors = "gray")
+```
+
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$renda,
+               fun = "xtab",
+               type  = "bar",
+               geom.colors = "Set2")
+```
+
+Questão sobre a Situação de rua, por escolaridade
+
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$sit_rua3, coesao_experimental$esc, 
+               fun = "xtab",
+               type  = "bar",
+               coord.flip = F,
+               show.n = F,
+               geom.colors = "Set2")
+```
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$bem_estar, coesao_experimental$relig, 
+               fun = "xtab",
+               type  = "bar",
+               geom.colors = "Set2",
+               show.n = F,
+               expand.grid = T)
+```
+
+<<<<<<< HEAD
+
+
+Responsável por combater a pobreza (primeira opção)
+```{r combater pobreza 1, fig.width=12}
+sjPlot::plot_frq(coesao_experimental$responsa_O1, geom.colors = "gray")
+```
+
+** Segundo principal responsável por combater a pobreza **
+```{r combater pobreza 2, fig.width=12}
+sjPlot::plot_frq(coesao_experimental$responsa_O2, geom.colors = "gray")
+```
+
+
+=======
+Responsável por combater a pobreza (primeira opção)
+
+```{r combater pobreza 1, fig.width=12}
+sjPlot::plot_frq(coesao_experimental$responsa_O1, geom.colors = "gray")
+```
+
+Segundo principal responsável por combater a pobreza
+
+```{r combater pobreza 2, fig.width=12}
+sjPlot::plot_frq(coesao_experimental$responsa_O2, geom.colors = "gray")
+```
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+
+```{r bloco pobreza, fig.width=12}
+#grupo para verificar concordância em relação à opiniões sobre a pobreza e desigualdade social
+bloco_pobreza <- coesao_experimental %>% 
+  select(I_1_desig:I_4_desig)
+
+plot_likert(bloco_pobreza, 
+            title = "Concordância em relação à aspectos da pobreza  e desigualdade",
+            legend.title = "Questões",
+            axis.labels = c("Para acabar com a pobreza e reduzir a desigualdade falta somente vontade política dos governantes",
+                            "A pobreza e a desigualdade só podem ser combatidas se as elites e os ricos se organizarem para isso",
+                            "Os ricos é que devem pagar pelas políticas de combate à pobreza e desigualdade, mesmo que seja o governo que cuide da gestão dessa política",
+                            "Se os mais pobres se esforçassem mais haveria menos pobreza e desigualdade"),
+            catcount = 4,
+            #cat.neutral = 5, (notar que existe a resposta neutra, mas espontânea)
+            wrap.labels = 30,
+            geom.colors = "Spectral",
+            reverse.colors = T,
+            show.legend = T,
+            grid.range = 0.9,
+            sort.frq = "pos.desc",
+<<<<<<< HEAD
+            show.n = TRUE)+
+  theme(text = element_text(size = 8), legend.position = "bottom")
+```
+
+**consistencia interna das questões do bloco pobreza e desigualdade**
+```{r consistencia bloco pobreza, fig.width=12}
+=======
+            show.n = F)+
+  theme(text = element_text(size = 10), legend.position = "bottom")
+```
+
+
+```{r consistencia bloco pobreza, fig.width=12, include = F}
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+alpha(bloco_pobreza[,c("I_1_desig", "I_2_desig", "I_3_desig", "I_4_desig")])
+
+alpha(bloco_pobreza[,c("I_2_desig", "I_4_desig")]) #consistencia alta
+
+alpha(bloco_pobreza[,c("I_1_desig", "I_4_desig")])#consistência alta
+```
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+sjPlot::sjplot(data = coesao_experimental, coesao_experimental$I_1_desig, coesao_experimental$esc, 
+              fun = "xtab",
+             type  = "bar",
+             #coord_flip = T,
+<<<<<<< HEAD
+             geom.colors = "Set2",
+             wrap.title = 140)+
+  theme(legend.position = "bottom")
+```
+
+#para ver como tabela
+```{r, fig.width=12}
+sjPlot::sjtab(data = coesao_experimental, coesao_experimental$I_1_desig, coesao_experimental$esc, 
+               fun = "xtab")
+#               type  = "bar",
+ #              geom.colors = "Set1")
+```
+
+
+** MOTIVO PRA SER RICO **
+=======
+                          geom.colors = "Set2",
+             wrap.title = 140,
+             show.n = F)
+```
+
+Motivo que explica a pessoa ser rica
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_frq(coesao_experimental$motiv_rico_O1, 
+         type = "bar",
+         show.n = T, 
+         show.values = TRUE, 
+         sort.frq = "none", 
+         show.ci = TRUE,
+         show.na = TRUE,
+         coord.flip = F,
+         #vjust = "inward",
+         #hjust = "center",
+         expand.grid = T,
+         geom.colors = "grey")+
+<<<<<<< HEAD
+  theme(text = element_text(size = 8), legend.position = "bottom")
+```
+
+** Segunda motivo que explica a riqueza das pessoas **
+=======
+  theme(text = element_text(size = 10), legend.position = "bottom")
+```
+
+Segunda motivo que explica a riqueza das pessoas
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_frq(coesao_experimental$motiv_rico_O2, 
+         type = "bar",
+         show.n = T, 
+         show.values = TRUE, 
+         sort.frq = "none", 
+         show.ci = TRUE,
+         show.na = TRUE,
+         coord.flip = F,
+         #vjust = "inward",
+         #hjust = "center",
+         expand.grid = T,
+         wrap.title = 120,
+         geom.colors = "grey")+
+<<<<<<< HEAD
+  theme(text = element_text(size = 15))
+```
+
+Razão pela qual as pessoas são pobres
+=======
+  theme(text = element_text(size = 10))
+```
+
+Razão pela qual as pessoas são pobres
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r razao da pobreza 1, fig.width=12}
+plot_frq(coesao_experimental$motiv_pobre_O1, 
+         type = "bar",
+         show.n = T, 
+         show.values = TRUE, 
+         sort.frq = "none", 
+         show.ci = TRUE,
+         show.na = TRUE,
+         coord.flip = F,
+         #vjust = "inward",
+         #hjust = "center",
+         expand.grid = T,
+         wrap.title = 140,
+<<<<<<< HEAD
+         geom.colors = "grey")+
+  theme(text = element_text(size = 12))
+```
+
+**Razão para a pobreza 2**
+=======
+         wrap.labels = 15,
+         geom.colors = "grey")+
+  theme(text = element_text(size = 10))
+```
+
+Razão para a pobreza 2
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r razao para a pobreza 2, fig.width=12}
+plot_frq(coesao_experimental$motiv_pobre_O2, 
+         type = "bar",
+         show.n = T, 
+         show.values = TRUE, 
+         sort.frq = "none", 
+         show.na = TRUE,
+         coord.flip = F,
+         expand.grid = T,
+<<<<<<< HEAD
+         geom.colors = "grey")+
+=======
+         geom.colors = "grey",
+         wrap.labels = 15,
+         wrap.title = 120)+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+  theme(text = element_text(size = 11))
+```
+
+precisa ser corrigido
+
+<<<<<<< HEAD
+**precisa ser corrigido**
+=======
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r papel do Estado, include = F, fig.width=12}
+papel_estado <- coesao_experimental %>% 
+  select(I_1_resp_est:I_6_resp_est)
+
+sjPlot::plot_likert(papel_estado,
+            title = "Papel do Estado",
+            legend.title = "Grau de concordância 1(-) a 10(+)",
+            axis.labels = c("Garantir emprego", "Saúde gratuita", "Auxiliar empresas a crescer",
+                            "Reduzir diferenças de renda", "Educação universitária para todos", 
+                            "Garantir moradia decente"),
+            #catcount = 10,
+            #cat.neutral = 5,
+            wrap.labels = 40,
+            geom.colors = "Spectral",
+            reverse.colors = F,
+            show.legend = T,
+            grid.range = 0.6,
+            sort.frq = NULL,
+            show.n = F,
+            #values = "sum.outside"
+            ) +
+theme(plot.title = element_text(hjust = 0.5),text = element_text(size =8), axis.title = element_text(size = 8), legend.position = "bottom")
+```
+<<<<<<< HEAD
+
+**Papel do Estado**
+=======
+
+Papel do Estado
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r papel do estado empilhada, fig.width=12}
+plot_stackfrq(papel_estado,
+              title = "Papel do Estado na economia",
+              legend.title = "grau de concordância 0 a 10",
+              axis.labels = c("Garantir emprego", "Saúde gratuita", "Auxiliar empresas a crescer",
+                              "Reduzir diferenças de renda", "Educação universitária para todos", 
+                              "Garantir moradia decente"),
+              wrap.labels = 60,
+              show.total = T,
+              geom.colors = "Spectral",
+              geom.size = 0.9,
+              #reverse.colors = F,
+              show.legend = T,
+              #grid.range = 0.6,
+              sort.frq = "firs.desc") +
+              theme(text = element_text(size = 9), legend.position = "bottom")
+```
+<<<<<<< HEAD
+
+CRIANDO UM ÍNDICE DE GRAU DE APOIO AO ESTADO 0 a 10
+**Quartis**
+=======
+
+ÍNDICE DE GRAU DE APOIO AO ESTADO 0 a 10 Quartis
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r indice apoio estado, fig.width=12}
+coesao_experimental$I_apoio_estado <- rowMeans(
+  coesao_experimental[,c("I_1_resp_est", "I_2_resp_est", "I_3_resp_est", "I_4_resp_est", "I_5_resp_est", "I_6_resp_est")])
+
+summary(coesao_experimental$I_apoio_estado)
+```
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, include = F, fig.width=12}
+ggplot(coesao_experimental, mapping=aes(x=coesao_experimental$I_1_resp_est, y = coesao_experimental$renda)) + 
+  stat_summary(fun.data=mean_sdl, geom="bar")
+```
+
+<<<<<<< HEAD
+
+**64. QUAIS OS PROBLEMAS QUE A POBREZA E DESIG TRAZEM PRA SOCIEDADE (1 E 2)**
+=======
+64. QUAIS OS PROBLEMAS QUE A POBREZA E DESIG TRAZEM PRA SOCIEDADE (1 E 2)
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r consequencias da pobreza, fig.width=12}
+plot_frq(coesao_experimental$conseq_des_O1, 
+         type = "bar",
+         show.n = T, 
+         show.values = TRUE, 
+         show.na = TRUE,
+<<<<<<< HEAD
+         wrap.title = 70,
+=======
+         wrap.title = 120,
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+         wrap.labels = 20,
+         coord.flip = F,
+         geom.colors = "grey")+
+<<<<<<< HEAD
+  theme(text = element_text(size = 9))
+```
+
+**(SEGUNDA CONSEQUENCIA)**
+=======
+  theme(text = element_text(size = 10))
+```
+
+SEGUNDA CONSEQUENCIA
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_frq(coesao_experimental$conseq_des_O2, 
+         type = "bar",
+         show.n = T, 
+         sort.frq = "desc",
+         show.values = TRUE, 
+         show.na = TRUE,
+         coord.flip = F,
+         expand.grid = T,
+         wrap.title = 120,
+         geom.colors = "grey")+
+<<<<<<< HEAD
+  theme(text = element_text(size = 9))
+```
+
+65. SOLUÇÃO PARA A DESIGUALDADE NO NOSSO PAÍS
+=======
+  theme(text = element_text(size = 10))
+```
+
+65. SOLUÇÃO PARA A DESIGUALDADE NO NOSSO PAÍS
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r solucao desiguadade, fig.width=12}
+plot_frq(coesao_experimental$solucao_des_O1, 
+         type = "bar",
+         show.n = T, 
+         show.values = TRUE, 
+         sort.frq = "none", 
+         show.ci = TRUE,
+         show.na = TRUE,
+         coord.flip = F,
+         expand.grid = T,
+         wrap.title = 120,
+         wrap.labels = 15,
+         geom.colors = "grey") +
+<<<<<<< HEAD
+  theme(text = element_text(size =12))
+=======
+  theme(text = element_text(size =11))
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```
+
+66. EM QUE POSIÇÃO DA HIERARQUIA SOCIAL ESTÁ?
+
+```{r, fig.width=8, fig.width=12}
+plot_frq(coesao_experimental$classe_social, 
+         show.n = T, 
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = TRUE,
+         expand.grid = T,
+         wrap.title = 120,
+         geom.colors = "grey") +
+  theme(text = element_text(size =11))
+```
+
+<<<<<<< HEAD
+
+**68 A DISTÂNCIA ENTRE RICOS E POBRES NO BRASIL É MUITO GRANDE**
+=======
+68 A DISTÂNCIA ENTRE RICOS E POBRES NO BRASIL É MUITO GRANDE
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r distancia rico pobre, fig.width=12}
+plot_frq(coesao_experimental$rico_pobre, 
+         show.n = T, 
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = TRUE,
+         expand.grid = T,         
+         wrap.title = 80,
+         geom.colors = "grey") +
+  theme(text = element_text(size =11))
+```
+<<<<<<< HEAD
+
+**69 O GOVERNO DEVE CRIAR PROGRAMAS DE DISTRIBUICAO DE RENDA?**
+=======
+
+69 O GOVERNO DEVE CRIAR PROGRAMAS DE DISTRIBUICAO DE RENDA?
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_frq(coesao_experimental$prog_renda, 
+         show.n = T, 
+         show.values = TRUE,
+         sort.frq = "desc",
+         show.ci = TRUE,
+         show.na = TRUE,
+         expand.grid = T,
+         geom.colors = "grey",
+         wrap.title = 95) +
+  theme(text = element_text(size =11))
+```
+
+<<<<<<< HEAD
+**Questão 69, mas cruzando com renda**
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$prog_renda, coesao_experimental$renda,
+          wrap.labels = 20,
+          wrap.title = 80)+
+  theme(text = element_text(size =11))
+```
+
+**70. BENEFICIOS ASSISTENCIAIS DEIXAM AS PESSOAS ACOMODADAS**
+=======
+Questão 69, mas cruzando com renda
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$prog_renda, coesao_experimental$renda,
+          wrap.labels = 20,
+          wrap.title = 80,
+          show.n = F)+
+  theme(text = element_text(size =11), legend.position = "bottom")
+```
+
+70. BENEFICIOS ASSISTENCIAIS DEIXAM AS PESSOAS ACOMODADAS
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r beneficio social, fig.width=12}
+plot_frq(coesao_experimental$beneficios,
+  show.n = T, 
+  show.values = TRUE,
+  show.ci = TRUE,
+  show.na = TRUE,
+  expand.grid = T,
+  geom.colors = "grey",
+  wrap.labels = 40,
+<<<<<<< HEAD
+  wrap.title = 100)+
+  theme(text = element_text(size =11))
+```
+
+**Benefícios sociais acomodam as pessoas - por renda**
+```{r beneficio social - renda, fig.width=12}
+plot_xtab(coesao_experimental$beneficios, coesao_experimental$renda,
+          wrap.labels = 40,
+          wrap.title = 70)+
+  theme(text = element_text(size =11))
+```
+
+**Beneficios sociais acomodam as pessoas- por sexo**
+```{r beneficio social - por sexo, fig.width=12}
+plot_xtab(coesao_experimental$beneficios, coesao_experimental$sexo,
+          wrap.labels = 20,
+          wrap.title = 70)+
+  theme(text = element_text(size =11))
+```
+=======
+  wrap.title = 120)+
+  theme(text = element_text(size =11))
+```
+
+Benefícios sociais acomodam as pessoas - por renda
+
+```{r beneficio social - renda, fig.width=12}
+plot_xtab(coesao_experimental$beneficios, coesao_experimental$renda,
+          wrap.labels = 40,
+          wrap.title = 120,
+          show.n = F)+
+  theme(text = element_text(size =11), legend.position = "bottom")
+```
+
+**Beneficios sociais acomodam as pessoas- por sexo**
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+
+```{r beneficio social - por sexo, fig.width=12}
+plot_xtab(coesao_experimental$beneficios, coesao_experimental$sexo,
+          wrap.labels = 20,
+          wrap.title = 120,
+          show.n = F)+
+  theme(text = element_text(size =11), legend.position = "bottom")
+```
+
+```{r, fig.width=12}
+papel_estado_factor <- papel_estado
+papel_estado_factor <- lapply (papel_estado_factor, 
+                               function(x){factor(x, levels = c("0 - Nenhuma responsabilidade", "1", "2", "3",
+                                                                "4", "5", "6", "7", "8", "9", "10 - Total Responsabilidade"))})
+
+lik <- likert(as.data.frame(papel_estado_factor))
+
+
+<<<<<<< HEAD
+plot(lik, wrap = 60, text.size=3)+
+=======
+plot(lik, wrap = 60, text.size=4)+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+  theme(legend.text=element_text(size=rel(0.6)),
+        text = element_text(size =11))+
+  ggtitle("Responsabilidade do Estado")
+```
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r papel estado - renda, fig.width=12, fig.height=8}
+lik_renda <- likert(as.data.frame(papel_estado_factor), grouping = coesao_experimental$renda)
+
+plot(lik_renda,
+     wrap = 60, 
+     text.size=5,
+     cat.neutral.color = "black",
+     show.n = T,
+     values = "show") +
+<<<<<<< HEAD
+  ggtitle("Responsabilidade do Estado, por faixas de renda")
+```
+
+**69 O GOVERNO DEVE CRIAR PROGRAMAS DE DISTRIBUICAO DE RENDA?**
+=======
+  ggtitle("Responsabilidade do Estado, por faixas de renda (1 - até 2SM, 2 - 2-5SM e 3 - +5SM)")
+```
+
+```{r, fig.width=12}
+plot(lik, type = "heat", wrap = 60, text.size=3)
+```
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_frq(coesao_experimental$prog_renda, 
+         show.n = T, 
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = TRUE,
+         expand.grid = T,
+         wrap.title = 90,
+         geom.colors = "grey")+
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11)) +
+  ggtitle("O governo deve criar programas de distribuição de renda?")
+```
+
+```{r programa de renda por renda, fig.width=12}
+coesao_factor <- plot_xtab(coesao_experimental$prog_renda, coesao_experimental$renda,
+                           wrap.title = 90, show.n = F)+
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size =10), legend.position = "bottom") 
+
+<<<<<<< HEAD
+```{r, fig.width=12}
+plot(lik, type = "heat", wrap = 60, text.size=3)
+```
+
+```{r programa de renda por renda, fig.width=12}
+coesao_factor <- plot_xtab(coesao_experimental$prog_renda, coesao_experimental$renda,
+                           wrap.title = 90)+
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size =10), legend.position = "bottom") 
+
+coesao_factor
+```
+
+
+**BENEFICIOCIS ASSISTENCIAIS DEIXAM AS PESSOAS ACOMODADAS**
+=======
+coesao_factor
+```
+
+BENEFICIOCIS ASSISTENCIAIS DEIXAM AS PESSOAS ACOMODADAS
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_frq(coesao_experimental$beneficios,
+         show.n = T, 
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = TRUE,
+         expand.grid = T,
+         wrap.title = 90,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11)) +
+  ggtitle("Benefícios assistenciais acomodam pessoas?"
+  )
+```
+
+Beneficios deixam acomodada - agrupado por renda
+
+```{r, fig.width=12}
+plot_xtab(coesao_experimental$beneficios, coesao_experimental$renda,
+<<<<<<< HEAD
+          wrap.title = 90)+
+=======
+          wrap.title = 120, show.n = F)+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+  theme(plot.title = element_text(hjust = 0.5), text = element_text(size =10), legend.position = "bottom") +
+  ggtitle("Benefícios assistenciais acomodam pessoas? (Agrupado por renda)"
+  )
+```
+<<<<<<< HEAD
+
+### USO APROPRIADO DO RECURSO DOS IMPOSTOS
+**Nota: falta criar um plot com as três respostas agruapadas**
+=======
+
+USO APROPRIADO DO RECURSO DOS IMPOSTOS Nota: falta criar um plot com as três respostas agruapadas
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r imposto saude, fig.width=12}
+plot_frq(coesao_experimental$I_1_aval,
+         title = "Saúde pública",
+         show.n = T, 
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = TRUE,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 40,
+<<<<<<< HEAD
+         wrap.title = 80)+
+  theme(text = element_text(size =10),
+        panel.background=element_blank())
+=======
+         wrap.title = 120)+
+  theme(text = element_text(size =10))
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_2_aval,
+         title = "Educação Pública",
+         show.n = T, 
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = TRUE,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 40,
+         wrap.title = 80)+
+<<<<<<< HEAD
+  theme(text = element_text(size =10),
+        panel.background=element_blank())
+=======
+  theme(text = element_text(size =10))
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_3_aval,
+         title = "Segurança Pública",
+         show.n = T, 
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = TRUE,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 40,
+         wrap.title = 90)+
+<<<<<<< HEAD
+  theme(text = element_text(size =10),
+        panel.background=element_blank())
+```
+
+
+### 74 a 77 - DIMENSÕES DO USO DOS IMPOSTOS ###
+=======
+  theme(text = element_text(size =10))
+```
+
+74 a 77 - DIMENSÕES DO USO DOS IMPOSTOS
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, include = FALSE, fig.width=12}
+avaliacao_uso_impostos <- coesao_experimental %>%  
+  select(I_1_imposto:I_4_imposto)
+```
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_likert(avaliacao_uso_impostos,
+            axis.labels = c("Em geral, o governo gasta bem o dinheiro dos impostos", 
+                            "A qualidade da saúde e da educação pública seria melhor se o governo aumentasse os impostos dos ricos para financiar essas políticas",
+                          "Não há recursos  suficientes para financiar um sistema de saúde e a educação pública de qualidade do país",
+                          "Os serviços de saúde e educação só terão mehor qualidade se forem melhor adminsitrados"),
+            catcount = 4,
+            cat.neutral = 5,
+            wrap.labels = 60,
+            geom.colors = "Spectral",
+            reverse.colors = F,
+            show.legend = T) +
+            #grid.range = 0.6,
+            #sort.frq = NULL
+            #values = "sum.outside"
+<<<<<<< HEAD
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =10), legend.position = "bottom", legend.justification = "right") +
+  ggtitle("Aspectos do uso dos impostos")
+```
+
+### Testando meios alternativos de explorar grouped tabs com fatores (estudar forcats) estuar plot_likert
+**FORMA ALTERNATIVA DE MOSTRAR**
+```{r, include = FALSE, fig.width=12}
+beneficios <- lapply (coesao_experimental$beneficios, 
+                               function(x){factor(x, levels = c("1", "2", "3","4", "5"),labels = c("Concorda totalmente", "Concorda em parte","Discorda totalmente","Discorda em parte","Não concorda nem discorda"))})
+```
+
+**78 O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza**
+=======
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =12), legend.position = "bottom", legend.justification = "right") +
+  ggtitle("Aspectos do uso dos impostos")
+```
+
+```{r, include = FALSE, fig.width=12}
+#Testando meios alternativos de explorar grouped tabs com fatores (estudar forcats)
+#FORMA ALTERNATIVA DE MOSTRAR
+beneficios <- lapply (coesao_experimental$beneficios, 
+                               function(x){factor(x, levels = c("1", "2", "3","4", "5"),labels = c("Concorda totalmente", "Concorda em parte","Discorda totalmente","Discorda em parte","Não concorda nem discorda"))})
+
+```
+
+78 O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, fig.width=12}
+plot_frq(coesao_experimental$exp_1,
+         show.n = T, 
+         drop.empty = T,
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = F,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 30,
+         wrap.title = 80)+
+<<<<<<< HEAD
+  theme(text = element_text(size =10),
+        panel.background=element_blank()) +
+  ggtitle("Experimento: O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza")
+```
+
+
+78 (experimento 2) O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza
+```{r, fig.width=12}
+=======
+  theme(text = element_text(size =10)) +
+  ggtitle("Experimento: O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza")
+```
+
+78 (experimento 2) O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$exp_2,
+         show.n = T, 
+         drop.empty = T,
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = F,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 30,
+         wrap.title = 80)+
+  theme(text = element_text(size =10)) +
+  ggtitle("Experimento 2: O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza")
+```
+
+78 experimento 2: o governo deve aumentar impostos de pessoas ricas para combater a pobreza
+
+```{r, fig.width=12}
+#78 (experimento 2) O governo federal deve aumentar os impostos de pessoas ricas 
+#para combater pobreza
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+plot_frq(coesao_experimental$exp_2,
+         show.n = T, 
+         drop.empty = T,
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = F,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+<<<<<<< HEAD
+         wrap.labels = 30,
+         wrap.title = 80)+
+=======
+         wrap.labels = 40,
+         wrap.title = 70)+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+  theme(text = element_text(size =10),
+        panel.background=element_blank()) +
+  ggtitle("Experimento 2: O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza")
+```
+
+<<<<<<< HEAD
+**78 (experimento 3) O governo federal deve aumentar os impostos de pessoas ricas 
+para combater pobreza**
+```{r, fig.width=12}
+=======
+experimento 3
+
+```{r, fig.width=12}
+#78 (experimento 3) O governo federal deve aumentar os impostos de pessoas ricas 
+#para combater pobreza
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+plot_frq(coesao_experimental$exp_3,
+         show.n = T, 
+         drop.empty = T,
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = F,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 30,
+         wrap.title = 80)+
+  theme(text = element_text(size =10),
+        panel.background=element_blank()) +
+  ggtitle("Experimento 3: O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza")
+```
+
+<<<<<<< HEAD
+###QUESTOES 81 A 83###
+=======
+QUESTOES 81 A 83
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r, include = FALSE, fig.width=12}
+propensao_distribuir <- coesao_experimental %>% 
+  select(I_1_exp_neut:I_3_exp_neut)
+```
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+
+Basicamente, as diferenças foram muito pequenas, o que sugere que a informação sobre a qualidade da alocação não afetou tanto a percepção.
+
+```{r, fig.width=12}
+plot_likert(propensao_distribuir,
+            axis.labels = c("Poderia pagar mais impostos se fossem usados para melhorar a vida dos pobres", 
+                            "Os mais ricos devem pagar pelos custos de combater a pobreza",
+                            "A pobreza é natural em qualquer sociedade"),
+            catcount = 4,
+            cat.neutral = 5,
+            geom.colors = "Spectral",
+            reverse.colors = F,
+            show.legend = T,
+            wrap.labels = 40,
+            wrap.title = 120,
+            values = "sum.outside",
+            grid.range = 0.7)+
+<<<<<<< HEAD
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =10), legend.position = "bottom", legend.justification = "right") +  ggtitle("Questões que abordam percepções sobre redistribuição")
+```
+
+86 IGUALDADE OU LIBERDADE
+=======
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11), legend.position = "bottom", legend.justification = "right") +  ggtitle("Questões que abordam percepções sobre redistribuição")
+```
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r igualdade ou liberdade, fig.width=12}
+plot_frq(coesao_experimental$liber_igual,
+         wrap.labels = 60,
+         wrap.title = 100,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5, vjust = 1),text = element_text(size =10)) +  ggtitle("Liberdade ou igualdade")
+```
+<<<<<<< HEAD
+
+**consistencia entre questões sobre apoio à diversidade**
+```{r, fig.width=12}
+=======
+
+
+
+```{r, fig.width=12, include = F}
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+#consistencia das questões sobre protecao à diversidade e direitos civis / religiosos
+alpha(coesao_experimental[,c("I_1_divers", "I_2_divers", "I_3_divers", "I_4_divers", "I_5_divers"), na.rm = TRUE])
+```
+
+<<<<<<< HEAD
+### ÍNDICE DE APOIO À DIVERSIDADE
+**0 a 10**
+=======
+ÍNDICE DE APOIO À DIVERSIDADE 0 a 10
+
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
+```{r aoio a diversidade, fig.width=12}
+coesao_experimental$I_divers_geral <- rowMeans(
+  coesao_experimental[,c("I_1_divers", "I_2_divers", "I_3_divers", "I_4_divers", "I_5_divers")]) 
+
+ggplot(coesao_experimental)+
+  geom_histogram(aes(x = I_divers_geral, binwidth = 22))
+```
+<<<<<<< HEAD
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_1_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_2_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r}
+plot_frq(coesao_experimental$I_3_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_4_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_5_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+**93 ESQUERDA E DIREITA**
+```{r, fig.width=12}
+plot_frq(coesao_experimental$ideologia,
+         wrap.title = 60,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   )) +  
+  ggtitle("Autoposicionamento no espectro ideológico")
+```
+
+
+**78 experimento 2: o governo deve aumentar impostos de pessoas ricas para combater a pobreza**
+```{r, fig.width=12}
+#78 (experimento 2) O governo federal deve aumentar os impostos de pessoas ricas 
+#para combater pobreza
+plot_frq(coesao_experimental$exp_2,
+         show.n = T, 
+         drop.empty = T,
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = F,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 40,
+         wrap.title = 70)+
+  theme(text = element_text(size =10),
+        panel.background=element_blank()) +
+  ggtitle("Experimento 2: O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza")
+```
+
+**experimento 3**
+```{r, fig.width=12}
+#78 (experimento 3) O governo federal deve aumentar os impostos de pessoas ricas 
+#para combater pobreza
+plot_frq(coesao_experimental$exp_3,
+         show.n = T, 
+         drop.empty = T,
+         show.values = TRUE,
+         show.ci = TRUE,
+         show.na = F,
+         #expand.grid = T,
+         show.sd = T,
+         geom.colors = "grey",
+         wrap.labels = 30,
+         wrap.title = 80)+
+  theme(text = element_text(size =10),
+        panel.background=element_blank()) +
+  ggtitle("Experimento 3: O governo federal deve aumentar os impostos de pessoas ricas para combater pobreza")
+```
+
+
+
+
+=======
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_1_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_2_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_3_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_4_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$I_5_divers, 
+         wrap.title = 80,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   ))
+```
+
+93 ESQUERDA E DIREITA
+
+```{r, fig.width=12}
+plot_frq(coesao_experimental$ideologia,
+         wrap.title = 60,
+         wrap.labels = 60,
+         show.ci = T,
+         geom.colors = "grey") +
+  theme(plot.title = element_text(hjust = 0.5),text = element_text(size =11
+                                                                   )) +  
+  ggtitle("Autoposicionamento no espectro ideológico")
+```
+>>>>>>> 9f95e23d104f3d6889d883528a04836fe36f5b53
